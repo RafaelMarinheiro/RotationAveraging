@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 02:40:42
 # @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-10-28 04:39:24
+# @Last Modified time: 2014-10-28 17:52:57
 
 
 
@@ -35,10 +35,10 @@ class TestL1Approximation(unittest.TestCase):
 
 		X = l1.l1_msolve(A, B, X0 +numpy.random.rand(n, k)*0.1)
 
-		print sum(sum(abs(A.dot(X0)-B)))
-		print sum(sum(abs(A.dot(X)-B)))
-		# print sum(abs(x-x0))
-		self.assertTrue(True, msg="Du")
+		# print sum(sum(abs(A.dot(X0)-B)))
+		# print sum(sum(abs(A.dot(X)-B)))
+
+		self.assertLessEqual(sum(sum(abs(A.dot(X)-B))), sum(sum(abs(A.dot(X0)-B))), "The solution is not better then the lstsq solution!")
 
 
 	def test_l1approximation(self):
@@ -56,10 +56,11 @@ class TestL1Approximation(unittest.TestCase):
 
 		x = l1.l1_solve(A, b, x0 +numpy.random.rand(n, k)*0.1)
 
-		print sum(abs(A.dot(x0)-b))
-		print sum(abs(A.dot(x)-b))
+		# print sum(abs(A.dot(x0)-b))
+		# print sum(abs(A.dot(x)-b))
 		# print sum(abs(x-x0))
-		self.assertTrue(True, msg="Du")
+		self.assertLessEqual(sum(abs(A.dot(x)-b)), sum(abs(A.dot(x0)-b)), "The solution is not better then the lstsq solution!")
+
 
 
 
