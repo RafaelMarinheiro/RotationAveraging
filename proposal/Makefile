@@ -3,7 +3,6 @@
 R = proposal
 
 STY = *.cls
-FIG = images/samplefigure.pdf
 
 pdf: $(R).pdf
 
@@ -12,7 +11,7 @@ $(R).bbl: $(R).bib
 	bibtex $(R)
 	pdflatex $(R)
 
-$(R).pdf: *.tex $(STY) $(FIG) $(R).bbl
+$(R).pdf: *.tex $(STY) $(R).bbl
 	pdflatex $(R)
 
 clean:

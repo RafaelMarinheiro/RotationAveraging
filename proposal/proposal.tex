@@ -68,46 +68,35 @@
 
 Large image sets are around us everyday but give little understanding into the scenes they are of. Making use of data to create 3D geometry could give strong representations of buildings for navigating cities or reconstructing objects to save modeling time. Applications such as Google Maps make use of these large image sets to reconstruct landscapes, but making a system more robust for disorganized sets and generalized to generating a 3D mesh for any geometry would have greater application.
 
+In this project, we pretend to implement parts of a Structure From Motion Pipeline. We will assume that cameras correspondences are given as an input and then we will try to reconstruct the image from that. More specifically, we are trying to solve the problem described as follows: Consider a connected graph $G = (V,E)$. Associated with each edge $e = (i, j)$, there is a relative rotation $R_{ij} \in SO(3)$ and relative translation $T_{ij} \in R^3$. We want to assign to each vertex of the graph a global rotation and translation $R_i, T_i$ such that we minimize:
+
+\begin{eqnarray}
+	\sum_{(i,j) \in E} d_1(R_{j}R_{i}^{-1}, R_{ij}) \\
+	\sum_{(i,j) \in E} d_2(T_{j}-T_{i}, T_{ij})
+\end{eqnarray}
+
+Where $d_1$ and $d_2$ are metrics of $SO(3)$ and $R^3$ respectively. There are two different types of approaches to solve such a problem: The first type of approach, called Iterative SfM, tries to solve this problem for a subset of the graph and then it iteratively adds new cameras. The second type of approach, called the Global SfM, tries to solve for all the nodes at once. Since the rotation problem and the translation problem are independent, one can use different techniques to solve each one.
 
 \section{Goals}
 
-We intend to implement a Global Structure from Motion technique to reconstruct scenes from photos. We will use the techniques described by \cite{rotation} and \cite{translation}. If we run into time constraints, we will use the code for \cite{rotation} (which is available online) and we will implement the translation correction ourselves. We intend to use our implementation with a large dataset obtained from the internet.
+We will implement the technique described by \cite{rotation}. We intend to test it using the datasets published by \cite{rotation} and \cite{translation}. If we have extra time, we might try to build our own dataset.
 
 \section{Schedule}
 
-\subsection{Plan A}
+\subsection{Plan C}
 
 \begin{itemize}
-	\item {Week of October 13th}: Project Proposal Presentation
-	\item {Week of October 20th}: Feature Detection and Feature Matching
-	\item {Week of October 27th}: Homography Computation and Relative Rotation/Translation computation
-	\item {Week of November 3rd}: Homography Computation and Relative Rotation/Translation computation
-	\item {Week of November 10th}: Rotation Averaging
-	\item {Week of November 17th}: Rotation Averaging
-	\item {Week of November 24th}: Translation Correction
-	\item {Week of December 1st}: Translation Correction
+	\item {Week of October 27th}: Read and fully understand \cite{rotation}
+	\item {Week of November 3rd}: Implementation
+	\item {Week of November 10th}: Implementation
+	\item {Week of November 17th}: Testing and Debugging
+	\item {Week of November 24th}: Testing and Debugging
+	\item {Week of December 1st}: Evaluation
 	\item {Week of December 8th}: Evaluation
 \end{itemize}
-
-\subsection{Plan B}
-
-\begin{itemize}
-	\item {Week of October 13th}: Project Proposal Presentation
-	\item {Week of October 20th}: Feature Detection and Feature Matching
-	\item {Week of October 27th}: Homography Computation and Relative Rotation/Translation computation
-	\item {Week of November 3rd}: Homography Computation and Relative Rotation/Translation computation
-	\item {Week of November 10th}: Homography Computation and Relative Rotation/Translation computation
-	\item {Week of November 17th}: Translation Correction
-	\item {Week of November 24th}: Translation Correction
-	\item {Week of December 1st}: Translation Correction
-	\item {Week of December 8th}: Evaluation
-\end{itemize}
-
 
 
 \bibliographystyle{acmsiggraph}
 \bibliography{proposal}
-
-\cite*
 
 \end{document}
