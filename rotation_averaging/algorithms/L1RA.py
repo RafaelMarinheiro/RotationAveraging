@@ -3,15 +3,15 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 18:01:58
 # @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-10-29 00:34:20
+# @Last Modified time: 2014-11-22 17:56:30
 
-import common
-from .. import l1
+import rotation_averaging.algorithms.common as common
+import rotation_averaging.l1 as l1
 
 import numpy.linalg
 import logging
 
-def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=100, num_l1_steps=2, change_threshold=0.001):
+def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=19, num_l1_steps=2, change_threshold=0.001):
 	eps = numpy.spacing(1)
 	A = common.create_matrix_from_indices(num_nodes, indices)
 
@@ -28,7 +28,7 @@ def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 
 	it = 0
 	while not done:
-		wglobal = l1.l1_msolve(A, wdelta, default_estimate, tol=eps, num_l1_steps)
+		wglobal = l1.l1_msolve(A, wdelta, default_estimate, tol=eps, max_iterations=num_l1_steps)
 		global_rotations = common.update_global_rotation_from_log(global_rotations, wglobal)
 
 		wdelta = common.compute_relative_log_matrix(global_rotations, rotations, indices)
@@ -37,6 +37,8 @@ def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 		norm_glob = numpy.linalg.norm(wglobal)
 
 		it = it+1
+
+		logging.info("Iteration number %d. Norm: %f"%(it, norm_rel))
 
 		if norm_rel < tol:
 			logging.info("Algorithm converged to the error bound.")

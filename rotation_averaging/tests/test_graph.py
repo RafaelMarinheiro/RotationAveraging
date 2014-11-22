@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-29 15:06:14
 # @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-10-29 20:10:10
+# @Last Modified time: 2014-11-21 03:54:12
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -20,22 +20,30 @@ import scipy.linalg
 import scipy.sparse
 import scipy.sparse.linalg
 import unittest
-from .. import graph
-from .. import compare
+import graph
+import compare
 import logging
+import rotation_averaging
 
 class TestL1Approximation(unittest.TestCase):
 
 	def setUp(self):
-		logging.basicConfig(level=logging.WARN)
-		graphi = graph.generate_random_so3_graph(500, completeness=0.5, noise=0.1)
+		logging.basicConfig(level=logging.INFO)
+		graphi = graph.generate_random_so3_graph(200, completeness=0.5, noise=0.2)
 		self.global_rotations = graphi[0]
 		self.relative_rotations = graphi[1]
 		self.indices = graphi[2]
 
-	def test_random_graph(self):
-		compare.compare_global_rotation_to_graph(self.global_rotations, self.relative_rotations, self.indices, plot=True)
+	# def test_random_graph(self):
+	# 	compare.compare_global_rotation_to_graph(self.global_rotations, self.relative_rotations, self.indices, plot=False)
 
+	def test_L1RA(self):
+		# compare.compare_global_rotation_to_graph(self.global_rotations, self.relative_rotations, self.indices, plot=True)
+		initial_guess = graph.compute_initial_guess(len(self.global_rotations), self.relative_rotations, self.indices)
+		compare.compare_global_rotation_to_graph(initial_guess, self.relative_rotations, self.indices, plot=True)
+		solution = rotation_averaging.L1RA(len(self.global_rotations), self.relative_rotations, self.indices, initial_guess)
+		compare.compare_global_rotation_to_graph(solution, self.relative_rotations, self.indices, plot=True)
+		# compare.compare_global_rotations_to_baseline(solution, self.global_rotations, plot=True)
 
 	# def test_l1fullA(self):
 	# 	m = 100

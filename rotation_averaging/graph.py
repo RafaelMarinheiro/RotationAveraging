@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-29 14:42:12
 # @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-10-29 19:18:00
+# @Last Modified time: 2014-11-22 17:57:23
 
 import networkx as nx
 
@@ -11,6 +11,7 @@ import so3
 import numpy
 import numpy.linalg
 import math
+import logging
 
 import matplotlib.pyplot as plt
 
@@ -68,5 +69,34 @@ def generate_random_so3_graph(num_nodes, completeness=1.0, noise=None, n_outlier
 
 	return (global_rotation, relative_rotations, relative_edges)
 
+def compute_initial_guess(num_nodes, relative_rotations, relative_edges):
+	graph = nx.Graph()
+	graph.add_nodes_from(range(num_nodes))
 
-	
+	for (ind, edge) in enumerate(relative_edges):
+		(n, theta) = so3.matrix_to_axis_angle(relative_rotations[ind])
+		graph.add_edge(edge[0], edge[1], weight=theta, index=ind)
+
+	tree = nx.minimum_spanning_tree(graph)
+
+	global_rotation = []
+
+	for i in range(num_nodes):
+		global_rotation.append(numpy.identity(3))
+
+	edges = nx.dfs_edges(tree, 0)
+
+	for edge in edges:
+		ind = graph[edge[0]][edge[1]]["index"]
+		mat = relative_rotations[ind]
+
+		if relative_edges[ind][0] == edge[0] and relative_edges[ind][1] == edge[1]:
+			pass
+		elif relative_edges[ind][0] == edge[1] and relative_edges[ind][1] == edge[0]:
+			mat = mat.transpose()
+		else:
+			logging.error("GRAPH ERROR")
+
+		global_rotation[edge[1]] = mat.dot(global_rotation[edge[0]])
+
+	return global_rotation

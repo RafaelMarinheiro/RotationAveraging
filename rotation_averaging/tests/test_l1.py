@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 02:40:42
 # @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-10-28 17:52:57
+# @Last Modified time: 2014-11-21 01:23:40
 
 
 
@@ -13,7 +13,8 @@ import scipy.linalg
 import scipy.sparse
 import scipy.sparse.linalg
 import unittest
-from .. import l1
+import l1
+import irls
 import logging
 
 class TestL1Approximation(unittest.TestCase):
@@ -59,6 +60,26 @@ class TestL1Approximation(unittest.TestCase):
 		# print sum(abs(A.dot(x0)-b))
 		# print sum(abs(A.dot(x)-b))
 		# print sum(abs(x-x0))
+		self.assertLessEqual(sum(abs(A.dot(x)-b)), sum(abs(A.dot(x0)-b)), "The solution is not better then the lstsq solution!")
+
+	def test_irlsapproximation(self):
+		m = 1000
+		n = 10
+		k = 1
+
+		A = scipy.sparse.rand(m, n, format='csr')
+		b = numpy.random.rand(m, k)
+
+		ret = scipy.sparse.linalg.lsqr(A, b)
+		x0 = ret[0]
+		x0 = numpy.array([x0]).transpose()
+		# print max(abs(x0))
+		logging.info("Running the irls algorithm")
+		x = irls.ilrs_solve(A, b, x0 +numpy.random.rand(n, k)*0.1)
+
+		print sum(abs(A.dot(x0)-b))
+		print sum(abs(A.dot(x)-b))
+		print sum(abs(x-x0))
 		self.assertLessEqual(sum(abs(A.dot(x)-b)), sum(abs(A.dot(x0)-b)), "The solution is not better then the lstsq solution!")
 
 

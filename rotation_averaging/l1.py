@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-27 04:32:17
 # @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-10-28 04:41:51
+# @Last Modified time: 2014-11-21 03:47:11
 
 import logging
 import numpy
@@ -91,6 +91,10 @@ def l1_solve(A, b, x0, tol=1e-3, max_iterations=50):
 		hcond = 1
 		if hcond < 1e-14:
 			logging.warning("Matrix is ill-conditioned. Returning the previous iterate.")
+			return x
+
+		if numpy.isnan(numpy.min(dx)):
+			logging.warning("NaNs were found. Returning the previous iterate.")
 			return x
 
 		Adx = A.dot(dx)

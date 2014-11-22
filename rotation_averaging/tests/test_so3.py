@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 02:40:42
 # @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-10-28 17:50:39
+# @Last Modified time: 2014-11-21 01:19:25
 
 
 
@@ -13,7 +13,7 @@ import scipy.linalg
 import scipy.sparse
 import scipy.sparse.linalg
 import unittest
-from .. import so3
+import so3
 import logging
 
 class TestL1Approximation(unittest.TestCase):

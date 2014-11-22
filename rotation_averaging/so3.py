@@ -3,7 +3,11 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 04:41:23
 # @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-10-29 15:34:25
+# @Last Modified time: 2014-11-06 14:52:09
+
+"""
+Auxiliary functions to convert between different rotation representations.
+"""
 
 import numpy
 import numpy.linalg
@@ -13,9 +17,13 @@ import math
 # Axis-Angle <-> Log Conversion
 
 def axis_angle_to_log(n, theta):
+	"""Converts from the axis-angle representation to the log representation
+	"""
 	return n*theta
 
 def log_to_axis_angle(w):
+	"""OI
+	"""
 	theta = numpy.linalg.norm(w)
 	n = numpy.zeros((3, 1))
 	if theta != 0.0:
@@ -25,6 +33,8 @@ def log_to_axis_angle(w):
 
 # Quaternion <-> Axis-Angle conversion
 def quaternion_to_axis_angle(quat):
+	"""OI
+	"""
 	theta = 2.0*math.atan2(numpy.linalg.norm(quat[1:]), quat[0])
 	n = numpy.zeros((3,1))
 	if theta != 0.0:
@@ -33,6 +43,8 @@ def quaternion_to_axis_angle(quat):
 	return (n, theta)
 
 def axis_angle_to_quaternion(n, theta):
+	"""OI
+	"""
 	c = math.cos(theta/2)
 	s = math.sin(theta/2)
 	quat = numpy.zeros((4,1))
@@ -45,6 +57,8 @@ def axis_angle_to_quaternion(n, theta):
 # Matrix <-> Quaternion conversion
 
 def matrix_to_quaternion(rot):
+	"""OI
+	"""
 	s = math.sqrt(numpy.trace(rot) + 1.0)/2
 	quat = numpy.array([[s],
 						[(rot[2, 1]-rot[1, 2])/(4*s)],
@@ -54,6 +68,8 @@ def matrix_to_quaternion(rot):
 	return quat
 
 def quaternion_to_matrix(quat):
+	"""OI
+	"""
 	qw = quat[0][0]
 	qx = quat[1][0]
 	qy = quat[2][0]
@@ -67,10 +83,14 @@ def quaternion_to_matrix(quat):
 
 # Matrix <-> Axis-Angle conversion
 def matrix_to_axis_angle(rot):
+	"""OI
+	"""
 	return quaternion_to_axis_angle(matrix_to_quaternion(rot))
 
 
 def axis_angle_to_matrix(n, theta):
+	"""OI
+	"""
 	return quaternion_to_matrix(axis_angle_to_quaternion(n, theta))
 
 
