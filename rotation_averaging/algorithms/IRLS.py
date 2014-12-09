@@ -3,7 +3,7 @@
 # @Author: marinheiro
 # @Date:   2014-12-08 20:47:41
 # @Last Modified by:   marinheiro
-# @Last Modified time: 2014-12-08 20:51:03
+# @Last Modified time: 2014-12-09 00:25:20
 
 
 import common
@@ -12,7 +12,7 @@ import rotation_averaging.minimization.irls as irls
 import numpy.linalg
 import logging
 
-def IRLS(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=2, change_threshold=0.001):
+def IRLS(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=100, change_threshold=0.001):
 	eps = numpy.spacing(1)
 	A = common.create_matrix_from_indices(num_nodes, indices)
 
@@ -28,6 +28,7 @@ def IRLS(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 		done = True
 
 	it = 0
+	ptol = -1000
 	while not done:
 		wglobal = irls.irls_msolve(A, wdelta, default_estimate, tol=eps)
 		global_rotations = common.update_global_rotation_from_log(global_rotations, wglobal)
@@ -52,6 +53,10 @@ def IRLS(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 			# 	logging.info("Increasing the number of L1 steps")
 			# 	num_l1_steps = 4*num_l1_steps
 			# 	change_threshold = change_threshold/100
-			pass
+			if abs(ptol-norm_rel) < tol:
+				logging.info("Algorithm converged.")
+				done = True
+
+		ptol = norm_rel
 
 	return global_rotations

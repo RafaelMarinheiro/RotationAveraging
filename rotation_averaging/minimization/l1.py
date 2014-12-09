@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-27 04:32:17
-# @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-11-21 03:47:11
+# @Last Modified by:   marinheiro
+# @Last Modified time: 2014-12-08 21:48:35
 
 import logging
 import numpy
@@ -167,6 +167,7 @@ def l1_solve(A, b, x0, tol=1e-3, max_iterations=50):
 
 		logging.info("Iteration = %d, tau = %8.3f, Primal = %8.3f, PDGap = %8.3f, Dual res = %8.3f" % (pditer, tau, sum(u), sdg, scipy.linalg.norm(rdual)))
 		logging.info("H11p condition number = %8.3f" % hcond)
+	
 	return x
 
 def l1_msolve(A, B, X0, tol=1e-3, max_iterations=50):

@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 18:01:58
 # @Last Modified by:   marinheiro
-# @Last Modified time: 2014-12-08 20:46:20
+# @Last Modified time: 2014-12-09 00:25:27
 
 import common
 import rotation_averaging.minimization.l1 as l1
@@ -11,7 +11,7 @@ import rotation_averaging.minimization.l1 as l1
 import numpy.linalg
 import logging
 
-def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=2, num_l1_steps=2, change_threshold=0.001):
+def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=5, num_l1_steps=2, change_threshold=0.001):
 	eps = numpy.spacing(1)
 	A = common.create_matrix_from_indices(num_nodes, indices)
 
@@ -27,8 +27,10 @@ def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 		done = True
 
 	it = 0
+	ptol = -1000
 	while not done:
 		wglobal = l1.l1_msolve(A, wdelta, default_estimate, tol=eps, max_iterations=num_l1_steps)
+		print global_rotations[0].shape, wglobal.shape, 'baa'
 		global_rotations = common.update_global_rotation_from_log(global_rotations, wglobal)
 
 		wdelta = common.compute_relative_log_matrix(global_rotations, rotations, indices)
@@ -51,5 +53,11 @@ def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 				logging.info("Increasing the number of L1 steps")
 				num_l1_steps = 4*num_l1_steps
 				change_threshold = change_threshold/100
+
+			if abs(ptol-norm_rel) < tol:
+				logging.info("Algorithm converged.")
+				done = True
+
+		ptol = norm_rel
 
 	return global_rotations

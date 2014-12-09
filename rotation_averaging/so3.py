@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 04:41:23
-# @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-11-06 14:52:09
+# @Last Modified by:   marinheiro
+# @Last Modified time: 2014-12-08 23:30:01
 
 """
 Auxiliary functions to convert between different rotation representations.
@@ -25,7 +25,7 @@ def log_to_axis_angle(w):
 	"""OI
 	"""
 	theta = numpy.linalg.norm(w)
-	n = numpy.zeros((3, 1))
+	n = numpy.zeros((3,))
 	if theta != 0.0:
 		n = w/theta
 
@@ -91,6 +91,7 @@ def matrix_to_axis_angle(rot):
 def axis_angle_to_matrix(n, theta):
 	"""OI
 	"""
+	# print n.shape, theta
 	return quaternion_to_matrix(axis_angle_to_quaternion(n, theta))
 
 

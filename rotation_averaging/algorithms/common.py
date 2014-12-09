@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 18:07:20
-# @Last Modified by:   Rafael Marinheiro
-# @Last Modified time: 2014-11-22 17:56:49
+# @Last Modified by:   marinheiro
+# @Last Modified time: 2014-12-08 21:32:21
 
 import scipy.sparse
 import numpy
@@ -43,8 +43,7 @@ def update_global_rotation_from_log(global_rotations, log_matrix):
 	for node in range(len(global_rotations)):
 		n, theta = so3.log_to_axis_angle(log_matrix[node])
 		n = numpy.array([[n[0]], [n[1]], [n[2]]])
-		# print so3.axis_angle_to_matrix(n, theta)
-
+	
 		global_rotations[node] = global_rotations[node].dot(so3.axis_angle_to_matrix(n, theta))
 
 	return global_rotations

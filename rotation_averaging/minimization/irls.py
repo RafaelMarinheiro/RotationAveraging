@@ -18,9 +18,9 @@ def ilrs_phi(e, sigma=5*math.pi/180):
 	for el in e:
 		diagonal.append(sigma*sigma/(el[0]*el[0] + sigma*sigma))
 
-	return scipy.sparse.diags([diagonal], [0])
+	return scipy.sparse.diags([diagonal], [0], format='csr')
 
-def ilrs_solve(A, b, x0, tol=1e-3):
+def ilrs_solve(A, b, x0, tol=1e-3, max_iterations=3):
 	""" Iteratively Reweighted Least Squares
 
 	Computes the solution :math:`x^*` of the :math:`\\ell_1` approximation problem:
@@ -43,20 +43,32 @@ def ilrs_solve(A, b, x0, tol=1e-3):
 
 	:returns: xstar -- the solution to the approximation problem
 	"""
-	x_prev = x0*0.0
+	x_prev = x0*0.0 + 231231.0
 	x = x0
-	while scipy.linalg.norm(x-x_prev) > tol:
+	it = 0
+	while scipy.linalg.norm(x-x_prev) > tol and it < max_iterations:
+		logging.info("IRLS: Iteration %d of %d, Error: %f Tolerance: %f" % (it+1, max_iterations, scipy.linalg.norm(x-x_prev), tol))
 		x_prev = x
 		e = A.dot(x) - b
+		if numpy.isnan(numpy.min(x)):
+			logging.warning("NaNs were found. Returning the previous iterate.")
+			return x
+
 		phi_m = ilrs_phi(e)
-		T1 = scipy.sparse.linalg.inv(scipy.transpose(A).dot(phi_m.dot(A)))
-		T2 = phi_m.dot(b)
-		T3 = scipy.transpose(A).dot(T2)
-		x = T1.dot(T3)
-	
+
+		xt = scipy.sparse.linalg.lsqr(phi_m.dot(A),phi_m.dot(b), iter_lim=1000)
+		xt = xt[0]
+		xt = numpy.array([xt]).transpose()
+
+		if numpy.isnan(numpy.min(xt)):
+			logging.warning("NaNs were found. Returning the previous iterate.")
+			return x
+		
+		x = xt
+		it = it+1
 	return x
 
-def irls_msolve(A, B, X0, tol=1e-3):
+def irls_msolve(A, B, X0, tol=1.0e-3, max_iterations=20):
 	"""Returns the solution :math:`X^*` of the :math:`\\ell_1` approximation problem:
 
 		:math:`X^* = \\underset{X}{\\arg\\min} \\quad \\left\\lVert AX - B\\right\\rVert _1`
@@ -81,6 +93,6 @@ def irls_msolve(A, B, X0, tol=1e-3):
 	for i in range(Xstar.shape[1]):
 		b = numpy.array([B[..., i]]).transpose()
 		x0 = numpy.array([X0[..., i]]).transpose()
-		Xstar[..., i] = ilrs_solve(A, b, x0, tol=tol).transpose()
+		Xstar[..., i] = ilrs_solve(A, b, x0, max_iterations=max_iterations).transpose()
 
 	return Xstar
