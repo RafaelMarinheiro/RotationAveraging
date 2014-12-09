@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Author: Rafael Marinheiro
-# @Date:   2014-10-28 18:01:58
+# @Author: marinheiro
+# @Date:   2014-12-08 20:47:41
 # @Last Modified by:   marinheiro
-# @Last Modified time: 2014-12-08 20:46:20
+# @Last Modified time: 2014-12-08 20:51:03
+
 
 import common
-import rotation_averaging.minimization.l1 as l1
+import rotation_averaging.minimization.irls as irls
 
 import numpy.linalg
 import logging
 
-def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=2, num_l1_steps=2, change_threshold=0.001):
+def IRLS(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=2, change_threshold=0.001):
 	eps = numpy.spacing(1)
 	A = common.create_matrix_from_indices(num_nodes, indices)
 
@@ -28,7 +29,7 @@ def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 
 	it = 0
 	while not done:
-		wglobal = l1.l1_msolve(A, wdelta, default_estimate, tol=eps, max_iterations=num_l1_steps)
+		wglobal = irls.irls_msolve(A, wdelta, default_estimate, tol=eps)
 		global_rotations = common.update_global_rotation_from_log(global_rotations, wglobal)
 
 		wdelta = common.compute_relative_log_matrix(global_rotations, rotations, indices)
@@ -47,9 +48,10 @@ def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 			logging.info("Maximum iterations reached")
 			done = True
 		else:
-			if norm_glob < change_threshold:
-				logging.info("Increasing the number of L1 steps")
-				num_l1_steps = 4*num_l1_steps
-				change_threshold = change_threshold/100
+			# if norm_glob < change_threshold:
+			# 	logging.info("Increasing the number of L1 steps")
+			# 	num_l1_steps = 4*num_l1_steps
+			# 	change_threshold = change_threshold/100
+			pass
 
 	return global_rotations
