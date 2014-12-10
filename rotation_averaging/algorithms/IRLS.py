@@ -3,7 +3,7 @@
 # @Author: marinheiro
 # @Date:   2014-12-08 20:47:41
 # @Last Modified by:   marinheiro
-# @Last Modified time: 2014-12-09 00:25:20
+# @Last Modified time: 2014-12-09 01:14:44
 
 
 import common
@@ -12,7 +12,7 @@ import rotation_averaging.minimization.irls as irls
 import numpy.linalg
 import logging
 
-def IRLS(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=100, change_threshold=0.001):
+def IRLS(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations=10, change_threshold=0.001):
 	eps = numpy.spacing(1)
 	A = common.create_matrix_from_indices(num_nodes, indices)
 

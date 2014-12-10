@@ -5,5 +5,5 @@ setup(name='rotation_averaging',
       description='Rotation Averaging Library',
       author='Rafael Marinheiro, Bryce Evans',
       author_email='rf356@cornell.edu, bae43@cornell.edu',
-      py_modules=['algorithms, minimization'],
+      packages= ['rotation_averaging', 'rotation_averaging.algorithms', 'rotation_averaging.minimization'],
       )

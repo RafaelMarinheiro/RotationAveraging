@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-11-22 17:52:15
 # @Last Modified by:   marinheiro
-# @Last Modified time: 2014-12-08 22:03:16
+# @Last Modified time: 2014-12-09 01:14:31
 
 
 import numpy
@@ -66,9 +66,9 @@ def main():
 
 	rotation_averaging.compare.compare_global_rotation_to_graph(initial_guess, relative_rotations, indices, plot=True)
 	# print initial_guess[0].shape, len(initial_guess)
-	solution = rotation_averaging.algorithms.L1RA(len(global_rotations), relative_rotations, indices, initial_guess)
-	rotation_averaging.compare.compare_global_rotation_to_graph(solution, relative_rotations, indices, plot=True)
-	solution = rotation_averaging.algorithms.IRLS(len(global_rotations), relative_rotations, indices, solution)
+	# solution = rotation_averaging.algorithms.L1RA(len(global_rotations), relative_rotations, indices, initial_guess)
+	# rotation_averaging.compare.compare_global_rotation_to_graph(solution, relative_rotations, indices, plot=True)
+	solution = rotation_averaging.algorithms.IRLS(len(global_rotations), relative_rotations, indices, initial_guess)
 	rotation_averaging.compare.compare_global_rotation_to_graph(solution, relative_rotations, indices, plot=True)
 
 if __name__ == '__main__':

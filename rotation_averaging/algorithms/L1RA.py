@@ -3,7 +3,7 @@
 # @Author: Rafael Marinheiro
 # @Date:   2014-10-28 18:01:58
 # @Last Modified by:   marinheiro
-# @Last Modified time: 2014-12-09 00:25:27
+# @Last Modified time: 2014-12-09 04:49:56
 
 import common
 import rotation_averaging.minimization.l1 as l1
@@ -30,7 +30,6 @@ def L1RA(num_nodes, rotations, indices, initial_guess, tol=0.001, max_iterations
 	ptol = -1000
 	while not done:
 		wglobal = l1.l1_msolve(A, wdelta, default_estimate, tol=eps, max_iterations=num_l1_steps)
-		print global_rotations[0].shape, wglobal.shape, 'baa'
 		global_rotations = common.update_global_rotation_from_log(global_rotations, wglobal)
 
 		wdelta = common.compute_relative_log_matrix(global_rotations, rotations, indices)
